@@ -1,32 +1,35 @@
 package com.example.demo.controller;
 
-import java.util.List;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.example.demo.model.Bus;
 import com.example.demo.repository.BusRepository;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/buses")
+@CrossOrigin(origins = "*")
 public class BusController {
-    private final BusRepository busRepo;
 
-    public BusController(BusRepository busRepo) {
-        this.busRepo = busRepo;
-    }
+    private final BusRepository busRepository;
 
-    @PostMapping
-    public Bus addBus(@RequestBody Bus bus) {
-        return busRepo.save(bus);
+    public BusController(BusRepository busRepository) {
+        this.busRepository = busRepository;
     }
 
     @GetMapping
-    public List<Bus> getAll() {
-        return busRepo.findAll();
+    public List<Bus> getAllBuses() {
+        return busRepository.findAll();
+    }
+
+    @PostMapping("/book/{id}")
+    public String bookSeat(@PathVariable Long id) {
+        Bus bus = busRepository.findById(id).orElse(null);
+        if (bus != null && bus.getSeats_left() > 0) {
+            bus.setSeats_left(bus.getSeats_left() - 1);
+            busRepository.save(bus);
+            return "Seat booked successfully!";
+        }
+        return "No seats available!";
     }
 }

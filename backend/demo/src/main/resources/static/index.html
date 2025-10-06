@@ -1,14 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>GoBus - Home</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>GoBus Booking</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f9; padding: 20px; }
+    h1 { color: #d32f2f; }
+    .bus-card {
+      background: white; padding: 15px; margin: 10px 0;
+      border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    button {
+      background: #d32f2f; color: white; border: none;
+      padding: 8px 12px; border-radius: 5px; cursor: pointer;
+    }
+    button:disabled { background: #ccc; cursor: not-allowed; }
+  </style>
 </head>
 <body>
-    <h1>Welcome to GoBus 🚍</h1>
-    <a href="login.html">Login</a>
-    <a href="register.html">Register</a>
-    <a href="buses.html">View Buses</a>
+  <h1>🚌 GoBus Booking</h1>
+  <div id="bus-list">Loading buses...</div>
+
+  <script>
+    const apiUrl = "http://localhost:8080/buses";
+
+    // Fetch buses
+    async function loadBuses() {
+      const res = await fetch(apiUrl);
+      const buses = await res.json();
+      const listDiv = document.getElementById("bus-list");
+      listDiv.innerHTML = "";
+
+      buses.forEach(bus => {
+        const div = document.createElement("div");
+        div.className = "bus-card";
+        div.innerHTML = `
+          <h3>${bus.route}</h3>
+          <p>🕒 Departure: ${bus.departure_time}</p>
+          <p>Seats Left: <span id="seats-${bus.id}">${bus.seats_left}</span></p>
+          <button onclick="bookSeat(${bus.id})" ${bus.seats_left <= 0 ? "disabled" : ""}>
+            Book Seat
+          </button>
+        `;
+        listDiv.appendChild(div);
+      });
+    }
+
+    // Book seat
+    async function bookSeat(id) {
+      const res = await fetch(`${apiUrl}/book/${id}`, { method: "POST" });
+      const msg = await res.text();
+      alert(msg);
+      loadBuses(); // refresh seats
+    }
+
+    // Load on page start
+    loadBuses();
+  </script>
 </body>
 </html>
