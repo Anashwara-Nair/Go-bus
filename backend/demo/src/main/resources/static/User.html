@@ -1,45 +1,331 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>GoBus Login</title>
-  <style>
-    body { font-family: Arial, sans-serif; background: #f4f4f9; padding: 40px; text-align: center; }
-    h1 { color: #1976d2; }
-    form { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); display: inline-block; }
-    input { display: block; margin: 10px auto; padding: 8px; width: 250px; border: 1px solid #ccc; border-radius: 5px; }
-    button { background: #1976d2; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; }
-    button:hover { background: #125ea8; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go Bus - Your Journey Starts Here</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            background: linear-gradient(180deg, #000 0%, #1a0000 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(220, 38, 38, 0.1) 0%, transparent 70%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .logo {
+            font-size: 5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+            letter-spacing: -2px;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            color: #d1d5db;
+            margin-bottom: 3rem;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+        }
+
+        .scroll-indicator span {
+            display: block;
+            width: 30px;
+            height: 50px;
+            border: 2px solid #dc2626;
+            border-radius: 25px;
+            position: relative;
+        }
+
+        .scroll-indicator span::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            width: 6px;
+            height: 6px;
+            background: #dc2626;
+            border-radius: 50%;
+            transform: translateX(-50%);
+            animation: scroll 2s infinite;
+        }
+
+        @keyframes scroll {
+            0% { top: 10px; opacity: 1; }
+            100% { top: 30px; opacity: 0; }
+        }
+
+        /* Login Section */
+        .login-section {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            background: #000;
+            position: relative;
+        }
+
+        .login-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #dc2626, transparent);
+        }
+
+        .login-container {
+            background: linear-gradient(135deg, #1a0000 0%, #0a0a0a 100%);
+            border: 1px solid #dc2626;
+            border-radius: 20px;
+            padding: 3rem;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 20px 60px rgba(220, 38, 38, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .login-container:hover {
+            transform: translateY(-5px);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .login-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        .login-header p {
+            color: #9ca3af;
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #d1d5db;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            background: #000;
+            border: 2px solid #333;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: #6b7280;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(220, 38, 38, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 3rem;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .login-container {
+                padding: 2rem;
+            }
+
+            .login-header h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h1>🚌 GoBus User Login</h1>
-  <form onsubmit="registerUser(event)">
-    <input type="text" id="name" placeholder="Enter your name" required>
-    <input type="email" id="email" placeholder="Enter your email" required>
-    <input type="text" id="contact" placeholder="Enter your contact number" required>
-    <button type="submit">Register</button>
-  </form>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="logo">GO BUS</div>
+            <h1>Your Journey Starts Here</h1>
+            <p>Experience seamless bus ticket booking with Go Bus. Travel smarter, faster, and more conveniently across the nation. Book your next adventure with just a few clicks and enjoy comfortable rides at the best prices.</p>
+        </div>
+        <div class="scroll-indicator">
+            <span></span>
+        </div>
+    </section>
 
-  <script>
-    async function registerUser(event) {
-      event.preventDefault();
+    <!-- Login Section -->
+    <section class="login-section">
+        <div class="login-container">
+            <div class="login-header">
+                <h2>Welcome Back</h2>
+                <p>Log in to continue your journey</p>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" placeholder="Enter your name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="contact">Contact Number</label>
+                    <input type="tel" id="contact" name="contact" placeholder="Enter your contact number" required>
+                </div>
+                <button type="submit" class="submit-btn">Sign In</button>
+            </form>
+        </div>
+    </section>
 
-      const user = {
-        name: document.getElementById("name").value,
-        email: document.getElementById("email").value,
-        contactNo: document.getElementById("contact").value
-      };
+    <script>
+        // Smooth scroll behavior
+        document.querySelector('.scroll-indicator').addEventListener('click', function() {
+            document.querySelector('.login-section').scrollIntoView({ behavior: 'smooth' });
+        });
 
-      const res = await fetch("http://localhost:8080/users/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(user)
-      });
+        // Register user function
+        async function registerUser(event) {
+            event.preventDefault();
 
-      const msg = await res.text();
-      alert(msg);
-    }
-  </script>
+            const user = {
+                name: document.getElementById("name").value,
+                email: document.getElementById("email").value,
+                contactNo: document.getElementById("contact").value
+            };
+
+            try {
+                const res = await fetch("http://localhost:8080/users/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(user)
+                });
+
+                const msg = await res.text();
+                alert(msg);
+                
+                // Redirect to index page if successful
+                if (res.ok) {
+                    window.location.href = "index.html";
+                }
+            } catch (error) {
+                alert("Error connecting to server: " + error.message);
+            }
+        }
+
+        // Attach the registerUser function to form submit
+        document.getElementById('loginForm').addEventListener('submit', registerUser);
+    </script>
 </body>
 </html>
